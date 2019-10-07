@@ -16,8 +16,13 @@ function array_category($catalog,$category) {
 
 	foreach ($catalog as $id => $item) {
 		if (strtolower($category) == strtolower($item["category"])) {
-			$output[] = $id;
+			$sort = $item["title"];
+			$sort = ltrim($sort, "The ");
+			$sort = ltrim($sort, "A ");
+			$sort = ltrim($sort, "An ");
+			$output[$id] = $sort;
 		}
 	}
-	return $output;
+	asort($output);
+	return array_keys($output);
 }
