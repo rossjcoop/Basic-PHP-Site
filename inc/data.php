@@ -113,12 +113,21 @@ $catalog[203] = [
         "Peter Jackson"
     ],
     "stars" => [
-        "Ron Livingston",
-        "Jennifer Aniston",
-        "David Herman",
-        "Ajay Naidu",
-        "Diedrich Bader",
-        "Stephen Root"
+        "Elijah Wood",
+		"Ian McKellen",
+		"Liv Tyler",
+		"Viggo Mortensen",
+		"Sean Astin",
+		"Cate Blanchett",
+		"John Rhys-Davies",
+		"Billy Boyd",
+		"Dominic Monaghan",
+		"Orlando Bloom",
+		"Christopher Lee",
+		"Hugo Weaving",
+		"Sean Bean",
+		"Ian Holm",
+		"Andy Serkis"
     ]
 ];
 $catalog[204] = [
@@ -139,7 +148,7 @@ $catalog[204] = [
         "Chris Sarandon",
         "Christopher Guest",
         "Wallace Shawn",
-        "AndrÃ© the Giant",
+        "André the Giant",
         "Fred Savage",
         "Peter Falk",
         "Billy Crystal"
