@@ -11,4 +11,9 @@ $email_body .= "Details " . $details . "\n";
 echo $email_body;
 echo "</pre>";
 
+echo $details;
+
+
+//To Do: Send email
+header("location:thanks.php");
 ?>
