@@ -85,6 +85,8 @@ $section = "suggest";
 
 include("inc/header.php"); ?>
 
+
+
 <div class="section page">
 	<div class="wrapper">
 		<h1>Suggest a Media Item</h1>
@@ -105,7 +107,120 @@ include("inc/header.php"); ?>
 					<td><input type="text" name="email" id="email"/></td>
 				</tr>
 				<tr>
-					<th><label for="details">Suggest Item Details</label></th>
+					<th><label for="category">Category</label></th>
+					<td><select name="category" id="category">
+						<option value="">Select One</option>
+						<option value="Books">Book</option>
+						<option value="Movies">Movie</option>
+						<option value="Music">Music</option>
+						</select></td>
+				</tr>
+				<tr>
+					<th><label for="title">Title</label></th>
+					<td><input type="text" name="title" id="title"/></td>
+				</tr>
+				<tr>
+					<th><label for="format">Format</label></th>
+					<td><select id="format" name="format">
+                    <option value="">Select One</option>
+                    <optgroup label="Books" id="bookFormat">
+                        <option value="Audio">Audio</option>
+                        <option value="Ebook">Ebook</option>
+                        <option value="Hardback">Hardback</option>
+                        <option value="Paperback">Paperback</option>
+                    </optgroup>
+                    <optgroup label="Movies" id="movieFormat">
+                        <option value="Blu-ray">Blu-ray</option>
+                        <option value="DVD">DVD</option>
+                        <option value="Streaming">Streaming</option>
+                        <option value="VHS">VHS</option>
+                    </optgroup>
+                    <optgroup label="Music" id="musicFormat">
+                        <option value="Cassette">Cassette</option>
+                        <option value="CD">CD</option>
+                        <option value="MP3">MP3</option>
+                        <option value="Vinyl">Vinyl</option>
+                    </optgroup>
+                	</select></td>
+				</tr>
+				<tr>
+	                <th>
+	                    <label for="genre">Genre</label>
+	                </th>
+	                <td><select name="genre" id="genre">
+	                    <option value="">Select One</option>
+	                    <optgroup label="Books" id="bookGenre">
+	                        <option value="Action">Action</option>
+	                        <option value="Adventure">Adventure</option>
+	                        <option value="Comedy">Comedy</option>
+	                        <option value="Fantasy">Fantasy</option>
+	                        <option value="Historical">Historical</option>
+	                        <option value="Historical Fiction">Historical Fiction</option>
+	                        <option value="Horror">Horror</option>
+	                        <option value="Magical Realism">Magical Realism</option>
+	                        <option value="Mystery">Mystery</option>
+	                        <option value="Paranoid">Paranoid</option>
+	                        <option value="Philosophical">Philosophical</option>
+	                        <option value="Political">Political</option>
+	                        <option value="Romance">Romance</option>
+	                        <option value="Saga">Saga</option>
+	                        <option value="Satire">Satire</option>
+	                        <option value="Sci-Fi">Sci-Fi</option>
+	                        <option value="Tech">Tech</option>
+	                        <option value="Thriller">Thriller</option>
+	                        <option value="Urban">Urban</option>
+	                    </optgroup>
+	                    <optgroup label="Movies" id="movieGenre">
+	                        <option value="Action">Action</option>
+	                        <option value="Adventure">Adventure</option>
+	                        <option value="Animation">Animation</option>
+	                        <option value="Biography">Biography</option>
+	                        <option value="Comedy">Comedy</option>
+	                        <option value="Crime">Crime</option>
+	                        <option value="Documentary">Documentary</option>
+	                        <option value="Drama">Drama</option>
+	                        <option value="Family">Family</option>
+	                        <option value="Fantasy">Fantasy</option>
+	                        <option value="Film-Noir">Film-Noir</option>
+	                        <option value="History">History</option>
+	                        <option value="Horror">Horror</option>
+	                        <option value="Musical">Musical</option>
+	                        <option value="Mystery">Mystery</option>
+	                        <option value="Romance">Romance</option>
+	                        <option value="Sci-Fi">Sci-Fi</option>
+	                        <option value="Sport">Sport</option>
+	                        <option value="Thriller">Thriller</option>
+	                        <option value="War">War</option>
+	                        <option value="Western">Western</option>
+	                    </optgroup>
+	                    <optgroup label="Music" id="musicGenre">
+	                        <option value="Alternative">Alternative</option>
+	                        <option value="Blues">Blues</option>
+	                        <option value="Classical">Classical</option>
+	                        <option value="Country">Country</option>
+	                        <option value="Dance">Dance</option>
+	                        <option value="Easy Listening">Easy Listening</option>
+	                        <option value="Electronic">Electronic</option>
+	                        <option value="Folk">Folk</option>
+	                        <option value="Hip Hop/Rap">Hip Hop/Rap</option>
+	                        <option value="Inspirational/Gospel">Insirational/Gospel</option>
+	                        <option value="Jazz">Jazz</option>
+	                        <option value="Latin">Latin</option>
+	                        <option value="New Age">New Age</option>
+	                        <option value="Opera">Opera</option>
+	                        <option value="Pop">Pop</option>
+	                        <option value="R&B/Soul">R&amp;B/Soul</option>
+	                        <option value="Reggae">Reggae</option>
+	                        <option value="Rock">Rock</option>
+	                    </optgroup>
+	               	</select></td>                 								              
+            	</tr>
+            	<tr>
+					<th><label for="year">Year</label></th>
+					<td><input type="text" name="year" id="year"/></td>
+				</tr>
+				<tr>
+					<th><label for="details">Additional Details</label></th>
 					<td><textarea name="details" id="details"></textarea></td>
 				</tr>
 				<tr style="display:none">
@@ -118,6 +233,53 @@ include("inc/header.php"); ?>
 		<?php } ?>
 	</div>
 </div>
+
+<script>
+
+
+	//works, just need to get rid of labels, and clear values every change.
+	
+	const category = document.getElementById("category");
+
+	const bookFormat = document.getElementById("bookFormat");
+	const bookGenre = document.getElementById("bookGenre");
+
+	const movieFormat = document.getElementById("movieFormat");
+	const movieGenre = document.getElementById("movieGenre");
+
+	const musicFormat = document.getElementById("musicFormat");
+	const musicGenre = document.getElementById("musicGenre");
+
+
+	category.addEventListener("change", () => {
+		console.log("click");
+		if (category.value == "Books") {
+			bookFormat.style.display = "initial";
+			bookGenre.style.display = "initial";
+			movieFormat.style.display = "none";
+			movieGenre.style.display = "none";
+			musicFormat.style.display = "none";
+			musicGenre.style.display = "none";
+		} else if (category.value == "Movies") {
+			movieFormat.style.display = "initial";
+			movieGenre.style.display = "initial";
+			bookFormat.style.display = "none";
+			bookGenre.style.display = "none";
+			musicFormat.style.display = "none";
+			musicGenre.style.display = "none";
+		} else if (category.value == "Music") {
+			musicFormat.style.display = "initial";
+			musicGenre.style.display = "initial";
+			bookFormat.style.display = "none";
+			bookGenre.style.display = "none";
+			movieFormat.style.display = "none";
+			movieGenre.style.display = "none";
+		}
+
+	});
+
+
+</script>
 
 
 <?php include("inc/footer.php"); ?>
