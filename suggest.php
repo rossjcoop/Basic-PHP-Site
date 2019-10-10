@@ -1,8 +1,11 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 require 'vendor/phpmailer/src/PHPMailer.php';
-require 'vendor/phpmailer/src/Exception.php';  
+require 'vendor/phpmailer/src/Exception.php';
+require 'vendor/phpmailer/src/SMTP.php';
+include 'exempt.php';  
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$name = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING));
@@ -35,11 +38,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // $mail->Host = 'localhost';
         // $mail->Port = 25;
         // $mail->CharSet = PHPMailer::CHARSET_UTF8;
+
+
+
+		$mail->isSMTP();
+		//Enable SMTP debugging
+		// SMTP::DEBUG_OFF = off (for production use)
+		// SMTP::DEBUG_CLIENT = client messages
+		// SMTP::DEBUG_SERVER = client and server messages
+		$mail->SMTPDebug = SMTP::DEBUG_SERVER;
+		//Set the hostname of the mail server
+		$mail->Host = 'smtp.gmail.com';
+		// use
+		// $mail->Host = gethostbyname('smtp.gmail.com');
+		// if your network does not support SMTP over IPv6
+		//Set the SMTP port number - 587 for authenticated TLS, a.k.a. RFC4409 SMTP submission
+		$mail->Port = 587;
+		//Set the encryption mechanism to use - STARTTLS or SMTPS
+		$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+		//Whether to use SMTP authentication
+		$mail->SMTPAuth = true;
+		//Username to use for SMTP authentication - use full email address for gmail
+		$mail->Username = 'rossjcoop@gmail.com';
+		//Password to use for SMTP authentication
+		$mail->Password = $gcode;
+
         //It's important not to use the submitter's address as the from address as it's forgery,
         //which will cause your messages to fail SPF checks.
         //Use an address in your own domain as the from address, put the submitter's address in a reply-to
-        $mail->setFrom('ross@rosscooper.dev', $name);
-        $mail->addAddress('ross@rosscooper.dev');
+        $mail->setFrom('rossjcoop@gmail.com', $name);
+        $mail->addAddress('rossjcoop@gmail.com');
         $mail->addReplyTo($email, $name);
         $mail->Subject = 'Library suggestion from ' . $name;
         $mail->Body = $email_body;
