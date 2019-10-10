@@ -1,4 +1,8 @@
-<?php 
+<?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+require 'vendor/phpmailer/src/PHPMailer.php';
+require 'vendor/phpmailer/src/Exception.php';  
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$name = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING));
@@ -15,17 +19,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		exit;
 	}
 
-	echo "<pre>";
+	if (!PHPMailer::validateAddress($email)) {
+		echo "Invalid Email Address";
+		exit;
+	}
+
 	$email_body = "";
 	$email_body .= "Name " . $name . "\n";
 	$email_body .= "Email " . $email . "\n";
 	$email_body .= "Details " . $details . "\n";
-	echo $email_body;
-	echo "</pre>";
-
-	echo $details;
 
 	//To Do: Send email
+	$mail = new PHPMailer;
+        // $mail->isSMTP();
+        // $mail->Host = 'localhost';
+        // $mail->Port = 25;
+        // $mail->CharSet = PHPMailer::CHARSET_UTF8;
+        //It's important not to use the submitter's address as the from address as it's forgery,
+        //which will cause your messages to fail SPF checks.
+        //Use an address in your own domain as the from address, put the submitter's address in a reply-to
+        $mail->setFrom('ross@rosscooper.dev', $name);
+        $mail->addAddress('ross@rosscooper.dev');
+        $mail->addReplyTo($email, $name);
+        $mail->Subject = 'Library suggestion from ' . $name;
+        $mail->Body = $email_body;
+        if (!$mail->send()) {
+            echo 'Mailer Error: '. $mail->ErrorInfo;
+            exit;
+        } 
+
 	header("location:suggest.php?status=thanks");
 
 }
