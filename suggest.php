@@ -82,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $pageTitle = 'Suggest a Media Item';
 $section = "suggest";
+$category = "none";
 
 include("inc/header.php"); ?>
 
@@ -99,57 +100,115 @@ include("inc/header.php"); ?>
 		<form method="post" action="suggest.php">
 			<table>
 				<tr>
-					<th><label for="name">Name</label></th>
-					<td><input type="text" name="name" id="name"/></td>
+					<th>
+						<label for="name">Name</label>
+					</th>
+					<td>
+						<input type="text" name="name" id="name"/>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="email">Email</label></th>
-					<td><input type="text" name="email" id="email"/></td>
+					<th>
+						<label for="email">Email</label>
+					</th>
+					<td>
+						<input type="text" name="email" id="email"/>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="category">Category</label></th>
-					<td><select name="category" id="category">
-						<option value="">Select One</option>
-						<option value="Books">Book</option>
-						<option value="Movies">Movie</option>
-						<option value="Music">Music</option>
-						</select></td>
+					<th>
+						<label for="category">Category</label>
+					</th>
+					<td>
+						<select name="category" id="category">
+							<option value="">Select One</option>
+							<option value="Books">Book</option>
+							<option value="Movies">Movie</option>
+							<option value="Music">Music</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="title">Title</label></th>
-					<td><input type="text" name="title" id="title"/></td>
+					<th>
+						<label for="title">Title</label>
+					</th>
+					<td>
+						<input type="text" name="title" id="title"/>
+					</td>
 				</tr>
-				<tr>
-					<th><label for="format">Format</label></th>
-					<td><select id="format" name="format">
-                    <option value="">Select One</option>
-                    <optgroup label="Books" id="bookFormat">
-                        <option value="Audio">Audio</option>
-                        <option value="Ebook">Ebook</option>
-                        <option value="Hardback">Hardback</option>
-                        <option value="Paperback">Paperback</option>
-                    </optgroup>
-                    <optgroup label="Movies" id="movieFormat">
-                        <option value="Blu-ray">Blu-ray</option>
-                        <option value="DVD">DVD</option>
-                        <option value="Streaming">Streaming</option>
-                        <option value="VHS">VHS</option>
-                    </optgroup>
-                    <optgroup label="Music" id="musicFormat">
-                        <option value="Cassette">Cassette</option>
-                        <option value="CD">CD</option>
-                        <option value="MP3">MP3</option>
-                        <option value="Vinyl">Vinyl</option>
-                    </optgroup>
-                	</select></td>
+
+
+				<tr data-category="none">
+					<th>
+						<label for="format-none">Format</label>
+					</th>
+					<td>
+						<select id="format-none" name="format">
+                    		option value="">Select One</option>
+                    	</select>
+                    </td>
+                </tr>
+                <tr data-category="books">
+                	<th>
+                		<label for="format-book">Format</label>
+                	</th>
+                    <td>
+                    	<select id="format-book">
+	                    	<option value="">Select One</option>
+	                        <option value="Audio">Audio</option>
+	                        <option value="Ebook">Ebook</option>
+	                        <option value="Hardback">Hardback</option>
+	                        <option value="Paperback">Paperback</option>
+                    	</select>
+                    </td>
+                </tr>
+                <tr data-category="movies">
+                	<th>
+                		<label for="format-movie">Format</label>
+                	</th>
+                    <td>
+                    	<select id="format-movie">
+	                    	<option value="">Select One</option>
+	                        <option value="Blu-ray">Blu-ray</option>
+	                        <option value="DVD">DVD</option>
+	                        <option value="Streaming">Streaming</option>
+	                        <option value="VHS">VHS</option>
+                    	</select>
+                	</td>
+                </tr>
+                <tr data-category="music">
+                	<th>
+                		<label for="format-music">Format</label>
+                	</th>
+                	<td>
+                    	<select id="format-music">
+	                    	<option value="">Select One</option>
+	                        <option value="Cassette">Cassette</option>
+	                        <option value="CD">CD</option>
+	                        <option value="MP3">MP3</option>
+	                        <option value="Vinyl">Vinyl</option>
+                		</select>
+                	</td>
 				</tr>
-				<tr>
+
+
+				<tr data-category="none">
 	                <th>
-	                    <label for="genre">Genre</label>
+	                    <label for="genre-none">Genre</label>
 	                </th>
-	                <td><select name="genre" id="genre">
-	                    <option value="">Select One</option>
-	                    <optgroup label="Books" id="bookGenre">
+	                <td>
+	                	<select name="genre-none" id="genre-none">
+	                    	<option value=""></option>
+	                	</select>
+	                </td>
+	            </tr>
+	            <tr data-category="books">
+	            	<th>
+	                    <label for="genre-books">Genre</label>
+	                </th>
+	                <td>
+	                	<select name="genre-books" id="genre-books">
+		                    <option value="">Select One</option>	               
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Comedy">Comedy</option>
@@ -169,8 +228,16 @@ include("inc/header.php"); ?>
 	                        <option value="Tech">Tech</option>
 	                        <option value="Thriller">Thriller</option>
 	                        <option value="Urban">Urban</option>
-	                    </optgroup>
-	                    <optgroup label="Movies" id="movieGenre">
+                    	</select>
+                    </td>
+                </tr>
+                <tr data-category="movies">
+                	<th>
+	                    <label for="genre-movies">Genre</label>
+	                </th>
+	                <td>
+                    	<select name="genre-movies" id="genre-movies">
+	                    	<option value="">Select One</option>
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Animation">Animation</option>
@@ -192,8 +259,16 @@ include("inc/header.php"); ?>
 	                        <option value="Thriller">Thriller</option>
 	                        <option value="War">War</option>
 	                        <option value="Western">Western</option>
-	                    </optgroup>
-	                    <optgroup label="Music" id="musicGenre">
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr data-category="music">
+	            	<th>
+	                    <label for="genre-music">Genre</label>
+	                </th>
+	                <td>
+	                    <select name="genre-music" id="genre-music">
+		                    <option value="">Select One</option>
 	                        <option value="Alternative">Alternative</option>
 	                        <option value="Blues">Blues</option>
 	                        <option value="Classical">Classical</option>
@@ -212,20 +287,30 @@ include("inc/header.php"); ?>
 	                        <option value="R&B/Soul">R&amp;B/Soul</option>
 	                        <option value="Reggae">Reggae</option>
 	                        <option value="Rock">Rock</option>
-	                    </optgroup>
-	               	</select></td>                 								              
+	                    </select>
+	                </td>                 								              
             	</tr>
             	<tr>
-					<th><label for="year">Year</label></th>
-					<td><input type="text" name="year" id="year"/></td>
+					<th>
+						<label for="year">Year</label>
+					</th>
+					<td>
+						<input type="text" name="year" id="year"/>
+					</td>
 				</tr>
 				<tr>
-					<th><label for="details">Additional Details</label></th>
-					<td><textarea name="details" id="details"></textarea></td>
+					<th>
+						<label for="details">Additional Details</label>
+					</th>
+					<td>
+						<textarea name="details" id="details"></textarea>
+					</td>
 				</tr>
 				<tr style="display:none">
-					<td><input type="text" name="validation" id="validation"/>
-					<p>Please leave this field blank</p></td>
+					<td>
+						<input type="text" name="validation" id="validation"/>
+						<p>Please leave this field blank</p>
+					</td>
 				</tr>
 			</table>
 			<input type="submit" name="" value="Send"/>
@@ -237,22 +322,25 @@ include("inc/header.php"); ?>
 <script>
 
 
+	//Might use querySelector to change elements with attributes of data-category to hidden based on category
+
+
 	//works, just need to get rid of labels, and clear values every change.
-	
+
 	const category = document.getElementById("category");
 
-	const bookFormat = document.getElementById("bookFormat");
-	const bookGenre = document.getElementById("bookGenre");
+	const bookFormat = document.getElementById("format-book");
+	const bookGenre = document.getElementById("genre-books");
 
-	const movieFormat = document.getElementById("movieFormat");
-	const movieGenre = document.getElementById("movieGenre");
+	const movieFormat = document.getElementById("format-movie");
+	const movieGenre = document.getElementById("genre-movies");
 
-	const musicFormat = document.getElementById("musicFormat");
-	const musicGenre = document.getElementById("musicGenre");
+	const musicFormat = document.getElementById("format-music");
+	const musicGenre = document.getElementById("genre-music");
 
 
-	category.addEventListener("change", () => {
-		console.log("click");
+	category.addEventListener("change", (e) => {
+		console.log(documen);
 		if (category.value == "Books") {
 			bookFormat.style.display = "initial";
 			bookGenre.style.display = "initial";
@@ -277,6 +365,19 @@ include("inc/header.php"); ?>
 		}
 
 	});
+
+
+	function selectCategory(el) {
+    // get the category
+    var c = $(el).val();
+    $('[data-category]').each(function() {
+        var $this = $(this);
+        // 'show' only optgroup categories that match
+        $this[($this.attr('data-category') === c ? 'show' : 'hide')]();
+    });
+    // reset any previously-selected dropdowns
+    $('#genre, #format').val('');
+}
 
 
 </script>
