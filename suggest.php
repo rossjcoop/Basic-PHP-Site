@@ -121,7 +121,7 @@ include("inc/header.php"); ?>
 					</th>
 					<td>
 						<select name="category" id="category">
-							<option value="">Select One</option>
+							<option value="None">Select One</option>
 							<option value="Books">Book</option>
 							<option value="Movies">Movie</option>
 							<option value="Music">Music</option>
@@ -136,25 +136,23 @@ include("inc/header.php"); ?>
 						<input type="text" name="title" id="title"/>
 					</td>
 				</tr>
-
-
-				<tr data-category="none">
+				<tr class="options" value="None">
 					<th>
 						<label for="format-none">Format</label>
 					</th>
 					<td>
-						<select id="format-none" name="format">
-                    		option value="">Select One</option>
+						<select id="format-none" name="format-none">
+                    		<option value="None">Select One</option>
                     	</select>
                     </td>
                 </tr>
-                <tr data-category="books">
+                <tr class="options" value="Books">
                 	<th>
                 		<label for="format-book">Format</label>
                 	</th>
                     <td>
-                    	<select id="format-book">
-	                    	<option value="">Select One</option>
+                    	<select id="format-book" name="format-book">
+	                    	<option value="None">Select One</option>
 	                        <option value="Audio">Audio</option>
 	                        <option value="Ebook">Ebook</option>
 	                        <option value="Hardback">Hardback</option>
@@ -162,13 +160,13 @@ include("inc/header.php"); ?>
                     	</select>
                     </td>
                 </tr>
-                <tr data-category="movies">
+                <tr class="options" value="Movies">
                 	<th>
                 		<label for="format-movie">Format</label>
                 	</th>
                     <td>
-                    	<select id="format-movie">
-	                    	<option value="">Select One</option>
+                    	<select id="format-movie" name="format-movie">
+	                    	<option value="None">Select One</option>
 	                        <option value="Blu-ray">Blu-ray</option>
 	                        <option value="DVD">DVD</option>
 	                        <option value="Streaming">Streaming</option>
@@ -176,13 +174,13 @@ include("inc/header.php"); ?>
                     	</select>
                 	</td>
                 </tr>
-                <tr data-category="music">
+                <tr class="options" value="Music">
                 	<th>
                 		<label for="format-music">Format</label>
                 	</th>
                 	<td>
-                    	<select id="format-music">
-	                    	<option value="">Select One</option>
+                    	<select id="format-music" name="format-music">
+	                    	<option value="None">Select One</option>
 	                        <option value="Cassette">Cassette</option>
 	                        <option value="CD">CD</option>
 	                        <option value="MP3">MP3</option>
@@ -190,25 +188,23 @@ include("inc/header.php"); ?>
                 		</select>
                 	</td>
 				</tr>
-
-
-				<tr data-category="none">
+				<tr class="options" value="None">
 	                <th>
 	                    <label for="genre-none">Genre</label>
 	                </th>
 	                <td>
-	                	<select name="genre-none" id="genre-none">
-	                    	<option value=""></option>
+	                	<select id="genre-none" name="genre-none">
+	                    	<option value="None">Select One</option>
 	                	</select>
 	                </td>
 	            </tr>
-	            <tr data-category="books">
+	            <tr class="options" value="Books">
 	            	<th>
 	                    <label for="genre-books">Genre</label>
 	                </th>
 	                <td>
-	                	<select name="genre-books" id="genre-books">
-		                    <option value="">Select One</option>	               
+	                	<select id="genre-books" name="genre-books">
+		                    <option value="None">Select One</option>	               
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Comedy">Comedy</option>
@@ -231,13 +227,13 @@ include("inc/header.php"); ?>
                     	</select>
                     </td>
                 </tr>
-                <tr data-category="movies">
+                <tr class="options" value="Movies">
                 	<th>
 	                    <label for="genre-movies">Genre</label>
 	                </th>
 	                <td>
-                    	<select name="genre-movies" id="genre-movies">
-	                    	<option value="">Select One</option>
+                    	<select id="genre-movies" name="genre-movies">
+	                    	<option value="None">Select One</option>
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Animation">Animation</option>
@@ -262,13 +258,13 @@ include("inc/header.php"); ?>
 	                    </select>
 	                </td>
 	            </tr>
-	            <tr data-category="music">
+	            <tr class="options" value="Music">
 	            	<th>
 	                    <label for="genre-music">Genre</label>
 	                </th>
 	                <td>
-	                    <select name="genre-music" id="genre-music">
-		                    <option value="">Select One</option>
+	                    <select id="genre-music" name="genre-music">
+		                    <option value="None">Select One</option>
 	                        <option value="Alternative">Alternative</option>
 	                        <option value="Blues">Blues</option>
 	                        <option value="Classical">Classical</option>
@@ -314,71 +310,35 @@ include("inc/header.php"); ?>
 				</tr>
 			</table>
 			<input type="submit" name="" value="Send"/>
-		</form>";
+		</form>
 		<?php } ?>
 	</div>
 </div>
 
 <script>
 
-
-	//Might use querySelector to change elements with attributes of data-category to hidden based on category
-
-
-	//works, just need to get rid of labels, and clear values every change.
-
-	const category = document.getElementById("category");
-
-	const bookFormat = document.getElementById("format-book");
-	const bookGenre = document.getElementById("genre-books");
-
-	const movieFormat = document.getElementById("format-movie");
-	const movieGenre = document.getElementById("genre-movies");
-
-	const musicFormat = document.getElementById("format-music");
-	const musicGenre = document.getElementById("genre-music");
+	let category = document.getElementById("category");
+	let target = document.querySelectorAll(".options");
 
 
-	category.addEventListener("change", (e) => {
-		console.log(documen);
-		if (category.value == "Books") {
-			bookFormat.style.display = "initial";
-			bookGenre.style.display = "initial";
-			movieFormat.style.display = "none";
-			movieGenre.style.display = "none";
-			musicFormat.style.display = "none";
-			musicGenre.style.display = "none";
-		} else if (category.value == "Movies") {
-			movieFormat.style.display = "initial";
-			movieGenre.style.display = "initial";
-			bookFormat.style.display = "none";
-			bookGenre.style.display = "none";
-			musicFormat.style.display = "none";
-			musicGenre.style.display = "none";
-		} else if (category.value == "Music") {
-			musicFormat.style.display = "initial";
-			musicGenre.style.display = "initial";
-			bookFormat.style.display = "none";
-			bookGenre.style.display = "none";
-			movieFormat.style.display = "none";
-			movieGenre.style.display = "none";
-		}
+	const displayWhenSelected = (source, value, target) => {
+    	const selectedIndex = source.selectedIndex;
+    	const isSelected = source[selectedIndex].value === value;
+    	target.classList[isSelected ? "add" : "remove"]("show");
+	};
 
-	});
-
-
-	function selectCategory(el) {
-    // get the category
-    var c = $(el).val();
-    $('[data-category]').each(function() {
-        var $this = $(this);
-        // 'show' only optgroup categories that match
-        $this[($this.attr('data-category') === c ? 'show' : 'hide')]();
-    });
-    // reset any previously-selected dropdowns
-    $('#genre, #format').val('');
-}
-
+	window.onload = () => {
+		target.forEach(tr => {
+			displayWhenSelected(category, tr.attributes.value.value, tr);
+		});
+	};
+	
+	category.addEventListener("change", (evt) => {
+		target.forEach(tr => {
+			displayWhenSelected(category, tr.attributes.value.value, tr);
+		})
+    	
+	});	
 
 </script>
 
