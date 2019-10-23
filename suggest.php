@@ -10,10 +10,23 @@ include 'exempt.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$name = trim(filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING));
 	$email = trim(filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL));
+	$category = trim(filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING));
+	$title = trim(filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING));
+
+
+
+	//TODO Going to have to put some logic here for the multiple format/genre selects
+	$format = trim(filter_input(INPUT_POST, "format", FILTER_SANITIZE_STRING));
+	$genre = trim(filter_input(INPUT_POST, "genre", FILTER_SANITIZE_STRING));
+	
+	$year = trim(filter_input(INPUT_POST, "year", FILTER_SANITIZE_NUMBER_INT));
+
+
+
 	$details = trim(filter_input(INPUT_POST, "details", FILTER_SANITIZE_SPECIAL_CHARS));
 
-	if ($name == "" || $email == "" || $details == "") {
-		echo "Please fill in the required fields: Name, Email, and Details";
+	if ($name == "" || $email == "" || $category == "" || $title == "") {
+		echo "Please fill in the required fields: Name, Email, Category, and Title";
 		exit;
 	}
 
@@ -30,6 +43,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$email_body = "";
 	$email_body .= "Name " . $name . "\n";
 	$email_body .= "Email " . $email . "\n";
+	$email_body .= "\n\nSuggested Item\n\n";
+	$email_body .= "Category " . $category . "\n";
+	$email_body .= "Title " . $title . "\n";
+	$email_body .= "Format " . $format . "\n";
+	$email_body .= "Genre " . $genre . "\n";
+	$email_body .= "Year " . $year . "\n";
 	$email_body .= "Details " . $details . "\n";
 
 	//To Do: Send email
@@ -101,7 +120,7 @@ include("inc/header.php"); ?>
 			<table>
 				<tr>
 					<th>
-						<label for="name">Name</label>
+						<label for="name">Name (required)</label>
 					</th>
 					<td>
 						<input type="text" name="name" id="name"/>
@@ -109,7 +128,7 @@ include("inc/header.php"); ?>
 				</tr>
 				<tr>
 					<th>
-						<label for="email">Email</label>
+						<label for="email">Email (required)</label>
 					</th>
 					<td>
 						<input type="text" name="email" id="email"/>
@@ -117,7 +136,7 @@ include("inc/header.php"); ?>
 				</tr>
 				<tr>
 					<th>
-						<label for="category">Category</label>
+						<label for="category">Category (required)</label>
 					</th>
 					<td>
 						<select name="category" id="category">
@@ -130,7 +149,7 @@ include("inc/header.php"); ?>
 				</tr>
 				<tr>
 					<th>
-						<label for="title">Title</label>
+						<label for="title">Title (required)</label>
 					</th>
 					<td>
 						<input type="text" name="title" id="title"/>
