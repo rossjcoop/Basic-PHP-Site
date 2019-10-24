@@ -13,12 +13,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$category = trim(filter_input(INPUT_POST, "category", FILTER_SANITIZE_STRING));
 	$title = trim(filter_input(INPUT_POST, "title", FILTER_SANITIZE_STRING));
 
-
-
 	//TODO Going to have to put some logic here for the multiple format/genre selects
-	$format = trim(filter_input(INPUT_POST, "format", FILTER_SANITIZE_STRING));
-	$genre = trim(filter_input(INPUT_POST, "genre", FILTER_SANITIZE_STRING));
+	$format = "";
+	$formatBook = trim(filter_input(INPUT_POST, "format-book", FILTER_SANITIZE_STRING));
+	$formatMovie = trim(filter_input(INPUT_POST, "format-movie", FILTER_SANITIZE_STRING));
+	$formatMusic = trim(filter_input(INPUT_POST, "format-music", FILTER_SANITIZE_STRING));
+
+	if ($formatBook) {
+		$format = $formatBook;
+	} else if ($formatMovie) {
+		$format = $formatMovie;
+	} else if ($formatMusic) {
+		$format = $formatMusic;
+	} else {
+		$format = "None";
+	}
+
+	$genre = "";
+	$genreBooks = trim(filter_input(INPUT_POST, "genre-books", FILTER_SANITIZE_STRING));
+	$genreMovies = trim(filter_input(INPUT_POST, "genre-movies", FILTER_SANITIZE_STRING));
+	$genreMusic = trim(filter_input(INPUT_POST, "genre-music", FILTER_SANITIZE_STRING));
 	
+	if ($genreBooks) {
+		$genre = $genreBooks;
+	} else if ($genreMovies !== "") {
+		$genre = $genreMovies;
+	} else if ($genreMusic !== "") {
+		$genre = $genreMusic;
+	} else {
+		$genre = "None";
+	}
+
 	$year = trim(filter_input(INPUT_POST, "year", FILTER_SANITIZE_NUMBER_INT));
 
 
@@ -171,7 +196,7 @@ include("inc/header.php"); ?>
                 	</th>
                     <td>
                     	<select id="format-book" name="format-book">
-	                    	<option value="None">Select One</option>
+	                    	<option value="">Select One</option>
 	                        <option value="Audio">Audio</option>
 	                        <option value="Ebook">Ebook</option>
 	                        <option value="Hardback">Hardback</option>
@@ -185,7 +210,7 @@ include("inc/header.php"); ?>
                 	</th>
                     <td>
                     	<select id="format-movie" name="format-movie">
-	                    	<option value="None">Select One</option>
+	                    	<option value="">Select One</option>
 	                        <option value="Blu-ray">Blu-ray</option>
 	                        <option value="DVD">DVD</option>
 	                        <option value="Streaming">Streaming</option>
@@ -199,7 +224,7 @@ include("inc/header.php"); ?>
                 	</th>
                 	<td>
                     	<select id="format-music" name="format-music">
-	                    	<option value="None">Select One</option>
+	                    	<option value="">Select One</option>
 	                        <option value="Cassette">Cassette</option>
 	                        <option value="CD">CD</option>
 	                        <option value="MP3">MP3</option>
@@ -223,7 +248,7 @@ include("inc/header.php"); ?>
 	                </th>
 	                <td>
 	                	<select id="genre-books" name="genre-books">
-		                    <option value="None">Select One</option>	               
+		                    <option value="">Select One</option>	               
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Comedy">Comedy</option>
@@ -252,7 +277,7 @@ include("inc/header.php"); ?>
 	                </th>
 	                <td>
                     	<select id="genre-movies" name="genre-movies">
-	                    	<option value="None">Select One</option>
+	                    	<option value="">Select One</option>
 	                        <option value="Action">Action</option>
 	                        <option value="Adventure">Adventure</option>
 	                        <option value="Animation">Animation</option>
@@ -283,7 +308,7 @@ include("inc/header.php"); ?>
 	                </th>
 	                <td>
 	                    <select id="genre-music" name="genre-music">
-		                    <option value="None">Select One</option>
+		                    <option value="">Select One</option>
 	                        <option value="Alternative">Alternative</option>
 	                        <option value="Blues">Blues</option>
 	                        <option value="Classical">Classical</option>
