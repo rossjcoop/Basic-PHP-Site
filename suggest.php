@@ -51,40 +51,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$details = trim(filter_input(INPUT_POST, "details", FILTER_SANITIZE_SPECIAL_CHARS));
 
 	if ($name == "" || $email == "" || $category == "" || $title == "") {
-		echo "Please fill in the required fields: Name, Email, Category, and Title";
-		exit;
+		$error_message = "Please fill in the required fields: Name, Email, Category, and Title";		
 	}
 
-	if ($_POST["validation"] != "") {
-		echo "Bad form input";
-		exit;
+	if (!isset($error_message) && $_POST["validation"] != "") {
+		$error_message = "Bad form input";
 	}
 
-	if (!PHPMailer::validateAddress($email)) {
-		echo "Invalid Email Address";
-		exit;
+	if (!isset($error_message) && !PHPMailer::validateAddress($email)) {
+		$error_message = "Invalid Email Address";
 	}
 
-	$email_body = "";
-	$email_body .= "Name " . $name . "\n";
-	$email_body .= "Email " . $email . "\n";
-	$email_body .= "\n\nSuggested Item\n\n";
-	$email_body .= "Category " . $category . "\n";
-	$email_body .= "Title " . $title . "\n";
-	$email_body .= "Format " . $format . "\n";
-	$email_body .= "Genre " . $genre . "\n";
-	$email_body .= "Year " . $year . "\n";
-	$email_body .= "Details " . $details . "\n";
+	if (!isset($error_message)) {
 
-	//To Do: Send email
-	$mail = new PHPMailer;
-        // $mail->isSMTP();
-        // $mail->Host = 'localhost';
-        // $mail->Port = 25;
-        // $mail->CharSet = PHPMailer::CHARSET_UTF8;
+		$email_body = "";
+		$email_body .= "Name " . $name . "\n";
+		$email_body .= "Email " . $email . "\n";
+		$email_body .= "\n\nSuggested Item\n\n";
+		$email_body .= "Category " . $category . "\n";
+		$email_body .= "Title " . $title . "\n";
+		$email_body .= "Format " . $format . "\n";
+		$email_body .= "Genre " . $genre . "\n";
+		$email_body .= "Year " . $year . "\n";
+		$email_body .= "Details " . $details . "\n";
 
-
-
+		$mail = new PHPMailer;
+	        // $mail->isSMTP();
+	        // $mail->Host = 'localhost';
+	        // $mail->Port = 25;
+	        // $mail->CharSet = PHPMailer::CHARSET_UTF8;
 		$mail->isSMTP();
 		//Enable SMTP debugging
 		// SMTP::DEBUG_OFF = off (for production use)
@@ -115,20 +110,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->addReplyTo($email, $name);
         $mail->Subject = 'Library suggestion from ' . $name;
         $mail->Body = $email_body;
-        if (!$mail->send()) {
-            echo 'Mailer Error: '. $mail->ErrorInfo;
+
+        if ($mail->send()) {     
+            header("location:suggest.php?status=thanks");
             exit;
         } 
-
-	header("location:suggest.php?status=thanks");
-
+        //else statement not necessary since exiting the page if successful!
+        $error_message = 'Mailer Error: '. $mail->ErrorInfo;		
+	}
 }
 
 $pageTitle = 'Suggest a Media Item';
 $section = "suggest";
-$category = "none";
 
-include("inc/header.php"); ?>
+
+include("inc/header.php"); 
+
+
+
+
+?>
 
 
 
@@ -138,9 +139,15 @@ include("inc/header.php"); ?>
 
 		<?php if (isset($_GET["status"]) && $_GET["status"] == "thanks") {
 			echo "<p>Thanks for the email! I&rsquo;ll check out your suggestion shortly!</p>";
-		} else { ?>
+		} else {
+			if (isset($error_message)) {
+				echo '<p class="message">'.$error_message.'</p>';
+			} else {
+				echo '<p>If you think there is something I&rsquo;m missing, let me know! Complete the form to send me an email.</p>';
+			}
+		?>
 
-		<p>If you think there is something I&rsquo;m missing, let me know! Complete the form to send me an email.</p>
+		
 		<form method="post" action="suggest.php">
 			<table>
 				<tr>
@@ -148,7 +155,9 @@ include("inc/header.php"); ?>
 						<label for="name">Name (required)</label>
 					</th>
 					<td>
-						<input type="text" name="name" id="name"/>
+						<input type="text" name="name" id="name" value="<?php
+						if (isset($name)) echo $name;
+						?>"/>
 					</td>
 				</tr>
 				<tr>
@@ -156,7 +165,9 @@ include("inc/header.php"); ?>
 						<label for="email">Email (required)</label>
 					</th>
 					<td>
-						<input type="text" name="email" id="email"/>
+						<input type="text" name="email" id="email" value="<?php
+						if (isset($email)) echo $email;
+						?>"/>
 					</td>
 				</tr>
 				<tr>
@@ -166,9 +177,15 @@ include("inc/header.php"); ?>
 					<td>
 						<select name="category" id="category">
 							<option value="None">Select One</option>
-							<option value="Books">Book</option>
-							<option value="Movies">Movie</option>
-							<option value="Music">Music</option>
+							<option value="Books"<?php
+							if (isset($category) && $category == "Books") echo " selected";
+							?>>Book</option>
+							<option value="Movies"<?php
+							if (isset($category) && $category == "Movies") echo " selected";
+							?>>Movie</option>
+							<option value="Music"<?php
+							if (isset($category) && $category == "Music") echo " selected";
+							?>>Music</option>
 						</select>
 					</td>
 				</tr>
@@ -177,7 +194,9 @@ include("inc/header.php"); ?>
 						<label for="title">Title (required)</label>
 					</th>
 					<td>
-						<input type="text" name="title" id="title"/>
+						<input type="text" name="title" id="title" value="<?php
+						if (isset($title)) echo $title;
+						?>"/>
 					</td>
 				</tr>
 				<tr class="options" value="None">
@@ -197,10 +216,18 @@ include("inc/header.php"); ?>
                     <td>
                     	<select id="format-book" name="format-book">
 	                    	<option value="">Select One</option>
-	                        <option value="Audio">Audio</option>
-	                        <option value="Ebook">Ebook</option>
-	                        <option value="Hardback">Hardback</option>
-	                        <option value="Paperback">Paperback</option>
+	                        <option value="Audio"<?php
+							if (isset($formatBook) && $formatBook == "Audio") echo " selected";
+							?>>Audio</option>
+	                        <option value="Ebook"<?php
+							if (isset($formatBook) && $formatBook == "Ebook") echo " selected";
+							?>>Ebook</option>
+	                        <option value="Hardback"<?php
+							if (isset($formatBook) && $formatBook == "Hardback") echo " selected";
+							?>>Hardback</option>
+	                        <option value="Paperback"<?php
+							if (isset($formatBook) && $formatBook == "Paperback") echo " selected";
+							?>>Paperback</option>
                     	</select>
                     </td>
                 </tr>
@@ -211,10 +238,18 @@ include("inc/header.php"); ?>
                     <td>
                     	<select id="format-movie" name="format-movie">
 	                    	<option value="">Select One</option>
-	                        <option value="Blu-ray">Blu-ray</option>
-	                        <option value="DVD">DVD</option>
-	                        <option value="Streaming">Streaming</option>
-	                        <option value="VHS">VHS</option>
+	                        <option value="Blu-ray"<?php
+							if (isset($formatMovie) && $formatMovie == "Blu-ray") echo " selected";
+							?>>Blu-ray</option>
+	                        <option value="DVD"<?php
+							if (isset($formatMovie) && $formatMovie == "DVD") echo " selected";
+							?>>DVD</option>
+	                        <option value="Streaming"<?php
+							if (isset($formatMovie) && $formatMovie == "Streaming") echo " selected";
+							?>>Streaming</option>
+	                        <option value="VHS"<?php
+							if (isset($formatMovie) && $formatMovie == "VHS") echo " selected";
+							?>>VHS</option>
                     	</select>
                 	</td>
                 </tr>
@@ -225,10 +260,18 @@ include("inc/header.php"); ?>
                 	<td>
                     	<select id="format-music" name="format-music">
 	                    	<option value="">Select One</option>
-	                        <option value="Cassette">Cassette</option>
-	                        <option value="CD">CD</option>
-	                        <option value="MP3">MP3</option>
-	                        <option value="Vinyl">Vinyl</option>
+	                        <option value="Cassette"<?php
+							if (isset($formatMusic) && $formatMusic == "Cassette") echo " selected";
+							?>>Cassette</option>
+	                        <option value="CD"<?php
+							if (isset($formatMusic) && $formatMusic == "CD") echo " selected";
+							?>>CD</option>
+	                        <option value="MP3"<?php
+							if (isset($formatMusic) && $formatMusic == "MP3") echo " selected";
+							?>>MP3</option>
+	                        <option value="Vinyl"<?php
+							if (isset($formatMusic) && $formatMusic == "Vinyl") echo " selected";
+							?>>Vinyl</option>
                 		</select>
                 	</td>
 				</tr>
@@ -249,25 +292,63 @@ include("inc/header.php"); ?>
 	                <td>
 	                	<select id="genre-books" name="genre-books">
 		                    <option value="">Select One</option>	               
-	                        <option value="Action">Action</option>
-	                        <option value="Adventure">Adventure</option>
-	                        <option value="Comedy">Comedy</option>
-	                        <option value="Fantasy">Fantasy</option>
-	                        <option value="Historical">Historical</option>
-	                        <option value="Historical Fiction">Historical Fiction</option>
-	                        <option value="Horror">Horror</option>
-	                        <option value="Magical Realism">Magical Realism</option>
-	                        <option value="Mystery">Mystery</option>
-	                        <option value="Paranoid">Paranoid</option>
-	                        <option value="Philosophical">Philosophical</option>
-	                        <option value="Political">Political</option>
-	                        <option value="Romance">Romance</option>
-	                        <option value="Saga">Saga</option>
-	                        <option value="Satire">Satire</option>
-	                        <option value="Sci-Fi">Sci-Fi</option>
-	                        <option value="Tech">Tech</option>
-	                        <option value="Thriller">Thriller</option>
-	                        <option value="Urban">Urban</option>
+	                        <option value="Action"<?php
+							if (isset($genreBooks) && $genreBooks == "Action") echo " selected";
+							?>>Action</option>
+	                        <option value="Adventure"<?php
+							if (isset($genreBooks) && $genreBooks == "Adventure") echo " selected";
+							?>>Adventure</option>
+	                        <option value="Comedy"<?php
+							if (isset($genreBooks) && $genreBooks == "Comedy") echo " selected";
+							?>>Comedy</option>
+	                        <option value="Fantasy"<?php
+							if (isset($genreBooks) && $genreBooks == "Fantasy") echo " selected";
+							?>>Fantasy</option>
+	                        <option value="Historical"<?php
+							if (isset($genreBooks) && $genreBooks == "Historical") echo " selected";
+							?>>Historical</option>
+	                        <option value="Historical Fiction"<?php
+							if (isset($genreBooks) && $genreBooks == "Historical Fiction") echo " selected";
+							?>>Historical Fiction</option>
+	                        <option value="Horror"<?php
+							if (isset($genreBooks) && $genreBooks == "Horror") echo " selected";
+							?>>Horror</option>
+	                        <option value="Magical Realism"<?php
+							if (isset($genreBooks) && $genreBooks == "Magical Realism") echo " selected";
+							?>>Magical Realism</option>
+	                        <option value="Mystery"<?php
+							if (isset($genreBooks) && $genreBooks == "Mystery") echo " selected";
+							?>>Mystery</option>
+	                        <option value="Paranoid"<?php
+							if (isset($genreBooks) && $genreBooks == "Paranoid") echo " selected";
+							?>>Paranoid</option>
+	                        <option value="Philosophical"<?php
+							if (isset($genreBooks) && $genreBooks == "Philosophical") echo " selected";
+							?>>Philosophical</option>
+	                        <option value="Political"<?php
+							if (isset($genreBooks) && $genreBooks == "Political") echo " selected";
+							?>>Political</option>
+	                        <option value="Romance"<?php
+							if (isset($genreBooks) && $genreBooks == "Romance") echo " selected";
+							?>>Romance</option>
+	                        <option value="Saga"<?php
+							if (isset($genreBooks) && $genreBooks == "Saga") echo " selected";
+							?>>Saga</option>
+	                        <option value="Satire"<?php
+							if (isset($genreBooks) && $genreBooks == "Satire") echo " selected";
+							?>>Satire</option>
+	                        <option value="Sci-Fi"<?php
+							if (isset($genreBooks) && $genreBooks == "Sci-Fi") echo " selected";
+							?>>Sci-Fi</option>
+	                        <option value="Tech"<?php
+							if (isset($genreBooks) && $genreBooks == "Tech") echo " selected";
+							?>>Tech</option>
+	                        <option value="Thriller"<?php
+							if (isset($genreBooks) && $genreBooks == "Thriller") echo " selected";
+							?>>Thriller</option>
+	                        <option value="Urban"<?php
+							if (isset($genreBooks) && $genreBooks == "Urban") echo " selected";
+							?>>Urban</option>
                     	</select>
                     </td>
                 </tr>
@@ -278,27 +359,69 @@ include("inc/header.php"); ?>
 	                <td>
                     	<select id="genre-movies" name="genre-movies">
 	                    	<option value="">Select One</option>
-	                        <option value="Action">Action</option>
-	                        <option value="Adventure">Adventure</option>
-	                        <option value="Animation">Animation</option>
-	                        <option value="Biography">Biography</option>
-	                        <option value="Comedy">Comedy</option>
-	                        <option value="Crime">Crime</option>
-	                        <option value="Documentary">Documentary</option>
-	                        <option value="Drama">Drama</option>
-	                        <option value="Family">Family</option>
-	                        <option value="Fantasy">Fantasy</option>
-	                        <option value="Film-Noir">Film-Noir</option>
-	                        <option value="History">History</option>
-	                        <option value="Horror">Horror</option>
-	                        <option value="Musical">Musical</option>
-	                        <option value="Mystery">Mystery</option>
-	                        <option value="Romance">Romance</option>
-	                        <option value="Sci-Fi">Sci-Fi</option>
-	                        <option value="Sport">Sport</option>
-	                        <option value="Thriller">Thriller</option>
-	                        <option value="War">War</option>
-	                        <option value="Western">Western</option>
+	                        <option value="Action"<?php
+							if (isset($genreMovies) && $genreMovies == "Action") echo " selected";
+							?>>Action</option>
+	                        <option value="Adventure"<?php
+							if (isset($genreMovies) && $genreMovies == "Adventure") echo " selected";
+							?>>Adventure</option>
+	                        <option value="Animation"<?php
+							if (isset($genreMovies) && $genreMovies == "Animation") echo " selected";
+							?>>Animation</option>
+	                        <option value="Biography"<?php
+							if (isset($genreMovies) && $genreMovies == "Biography") echo " selected";
+							?>>Biography</option>
+	                        <option value="Comedy"<?php
+							if (isset($genreMovies) && $genreMovies == "Comedy") echo " selected";
+							?>>Comedy</option>
+	                        <option value="Crime"<?php
+							if (isset($genreMovies) && $genreMovies == "Crime") echo " selected";
+							?>>Crime</option>
+	                        <option value="Documentary"<?php
+							if (isset($genreMovies) && $genreMovies == "Documentary") echo " selected";
+							?>>Documentary</option>
+	                        <option value="Drama"<?php
+							if (isset($genreMovies) && $genreMovies == "Drama") echo " selected";
+							?>>Drama</option>
+	                        <option value="Family"<?php
+							if (isset($genreMovies) && $genreMovies == "Family") echo " selected";
+							?>>Family</option>
+	                        <option value="Fantasy"<?php
+							if (isset($genreMovies) && $genreMovies == "Fantasy") echo " selected";
+							?>>Fantasy</option>
+	                        <option value="Film-Noir"<?php
+							if (isset($genreMovies) && $genreMovies == "Film-Noir") echo " selected";
+							?>>Film-Noir</option>
+	                        <option value="History"<?php
+							if (isset($genreMovies) && $genreMovies == "History") echo " selected";
+							?>>History</option>
+	                        <option value="Horror"<?php
+							if (isset($genreMovies) && $genreMovies == "Horror") echo " selected";
+							?>>Horror</option>
+	                        <option value="Musical"<?php
+							if (isset($genreMovies) && $genreMovies == "Musical") echo " selected";
+							?>>Musical</option>
+	                        <option value="Mystery"<?php
+							if (isset($genreMovies) && $genreMovies == "Mystery") echo " selected";
+							?>>Mystery</option>
+	                        <option value="Romance"<?php
+							if (isset($genreMovies) && $genreMovies == "Romance") echo " selected";
+							?>>Romance</option>
+	                        <option value="Sci-Fi"<?php
+							if (isset($genreMovies) && $genreMovies == "Sci-Fi") echo " selected";
+							?>>Sci-Fi</option>
+	                        <option value="Sport"<?php
+							if (isset($genreMovies) && $genreMovies == "Sport") echo " selected";
+							?>>Sport</option>
+	                        <option value="Thriller"<?php
+							if (isset($genreMovies) && $genreMovies == "Thriller") echo " selected";
+							?>>Thriller</option>
+	                        <option value="War"<?php
+							if (isset($genreMovies) && $genreMovies == "War") echo " selected";
+							?>>War</option>
+	                        <option value="Western"<?php
+							if (isset($genreMovies) && $genreMovies == "Western") echo " selected";
+							?>>Western</option>
 	                    </select>
 	                </td>
 	            </tr>
@@ -309,24 +432,60 @@ include("inc/header.php"); ?>
 	                <td>
 	                    <select id="genre-music" name="genre-music">
 		                    <option value="">Select One</option>
-	                        <option value="Alternative">Alternative</option>
-	                        <option value="Blues">Blues</option>
-	                        <option value="Classical">Classical</option>
-	                        <option value="Country">Country</option>
-	                        <option value="Dance">Dance</option>
-	                        <option value="Easy Listening">Easy Listening</option>
-	                        <option value="Electronic">Electronic</option>
-	                        <option value="Folk">Folk</option>
-	                        <option value="Hip Hop/Rap">Hip Hop/Rap</option>
-	                        <option value="Inspirational/Gospel">Insirational/Gospel</option>
-	                        <option value="Jazz">Jazz</option>
-	                        <option value="Latin">Latin</option>
-	                        <option value="New Age">New Age</option>
-	                        <option value="Opera">Opera</option>
-	                        <option value="Pop">Pop</option>
-	                        <option value="R&B/Soul">R&amp;B/Soul</option>
-	                        <option value="Reggae">Reggae</option>
-	                        <option value="Rock">Rock</option>
+	                        <option value="Alternative"<?php
+							if (isset($genreMusic) && $genreMusic == "Alternative") echo " selected";
+							?>>Alternative</option>
+	                        <option value="Blues"<?php
+							if (isset($genreMusic) && $genreMusic == "Blues") echo " selected";
+							?>>Blues</option>
+	                        <option value="Classical"<?php
+							if (isset($genreMusic) && $genreMusic == "Classical") echo " selected";
+							?>>Classical</option>
+	                        <option value="Country"<?php
+							if (isset($genreMusic) && $genreMusic == "Country") echo " selected";
+							?>>Country</option>
+	                        <option value="Dance"<?php
+							if (isset($genreMusic) && $genreMusic == "Dance") echo " selected";
+							?>>Dance</option>
+	                        <option value="Easy Listening"<?php
+							if (isset($genreMusic) && $genreMusic == "Easy Listening") echo " selected";
+							?>>Easy Listening</option>
+	                        <option value="Electronic"<?php
+							if (isset($genreMusic) && $genreMusic == "Electronic") echo " selected";
+							?>>Electronic</option>
+	                        <option value="Folk"<?php
+							if (isset($genreMusic) && $genreMusic == "Folk") echo " selected";
+							?>>Folk</option>
+	                        <option value="Hip Hop/Rap"<?php
+							if (isset($genreMusic) && $genreMusic == "Hip Hop/Rap") echo " selected";
+							?>>Hip Hop/Rap</option>
+	                        <option value="Inspirational/Gospel"<?php
+							if (isset($genreMusic) && $genreMusic == "Inspirational/Gospel") echo " selected";
+							?>>Inspirational/Gospel</option>
+	                        <option value="Jazz"<?php
+							if (isset($genreMusic) && $genreMusic == "Jazz") echo " selected";
+							?>>Jazz</option>
+	                        <option value="Latin"<?php
+							if (isset($genreMusic) && $genreMusic == "Latin") echo " selected";
+							?>>Latin</option>
+	                        <option value="New Age"<?php
+							if (isset($genreMusic) && $genreMusic == "New Age") echo " selected";
+							?>>New Age</option>
+	                        <option value="Opera"<?php
+							if (isset($genreMusic) && $genreMusic == "Opera") echo " selected";
+							?>>Opera</option>
+	                        <option value="Pop"<?php
+							if (isset($genreMusic) && $genreMusic == "Pop") echo " selected";
+							?>>Pop</option>
+	                        <option value="R&B/Soul"<?php
+							if (isset($genreMusic) && $genreMusic == "R&B/Soul") echo " selected";
+							?>>R&amp;B/Soul</option>
+	                        <option value="Reggae"<?php
+							if (isset($genreMusic) && $genreMusic == "Reggae") echo " selected";
+							?>>Reggae</option>
+	                        <option value="Rock"<?php
+							if (isset($genreMusic) && $genreMusic == "Rock") echo " selected";
+							?>>Rock</option>
 	                    </select>
 	                </td>                 								              
             	</tr>
@@ -335,7 +494,9 @@ include("inc/header.php"); ?>
 						<label for="year">Year</label>
 					</th>
 					<td>
-						<input type="text" name="year" id="year"/>
+						<input type="text" name="year" id="year" value="<?php
+						if (isset($name)) echo $name;
+						?>"/>
 					</td>
 				</tr>
 				<tr>
@@ -343,7 +504,10 @@ include("inc/header.php"); ?>
 						<label for="details">Additional Details</label>
 					</th>
 					<td>
-						<textarea name="details" id="details"></textarea>
+						<textarea name="details" id="details"><?php
+						if (isset($details)) echo $details;
+						?>
+						</textarea>
 					</td>
 				</tr>
 				<tr style="display:none">

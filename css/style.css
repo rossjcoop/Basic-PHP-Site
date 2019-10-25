@@ -664,6 +664,15 @@ form input[type="submit"] {
     cursor: pointer;
 }
 
+/*Hide or show Format/Genre Dropdowns*/
+.options {
+    display: none;
+}
+.options.show {
+    display: table-row;
+}
+
+
 .search {
     background: #f0eeed;
     border-bottom: 3px solid #dddddd;
@@ -726,12 +735,3 @@ form input[type="submit"] {
 .footer a {text-decoration: none; color: #539def; margin: 0 10px;}
 .footer li:first-child a {margin-left: 4px;}
 .footer a:hover, .footer a:active {text-decoration: underline;}
-
-
-
-.options {
-    display: none;
-}
-.options.show {
-    display: table-row;
-}
